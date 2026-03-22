@@ -1,6 +1,4 @@
 import math
-
-import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
@@ -11,13 +9,14 @@ class ResidualBlock(nn.Module):
         self.bn1 = nn.BatchNorm2d(channels)
         self.conv2 = nn.Conv2d(channels, channels, kernel_size=3, padding=1)
         self.bn2 = nn.BatchNorm2d(channels)
+        self.leaky = nn.LeakyReLU(0.2, inplace=True)
     
     def forward(self, x):
         residual = x
-        out = F.relu(self.bn1(self.conv1(x)))
+        out = self.leaky(self.bn1(self.conv1(x)))
         out = self.bn2(self.conv2(out))
         out += residual
-        return F.relu(out)
+        return self.leaky(out)
 
 class BaseNet(nn.Module):
     def __init__(self, num_channels=[3,16,32,64], num_residual=12):
@@ -30,15 +29,15 @@ class BaseNet(nn.Module):
         self.bns = nn.ModuleList([
             nn.BatchNorm2d(num_channels[i+1]) for i in range(1, len(num_channels)-1)
         ])
-        # jeden blok rezydualny
         self.res_blocks = nn.Sequential(
             *[ResidualBlock(num_channels[-1]) for _ in range(num_residual)]
         )
+        self.leaky = nn.LeakyReLU(0.2, inplace=True)
     
     def forward_features(self, x):
-        x = F.relu(self.entry(x))
+        x = self.leaky(self.entry(x))
         for conv, bn in zip(self.layers, self.bns):
-            x = F.relu(bn(conv(x)))
+            x = self.leaky(bn(conv(x)))
         x = self.res_blocks(x)
         return x
 
@@ -47,16 +46,16 @@ class UpsampleBlock(nn.Module):
         super().__init__()
         self.conv = nn.Conv2d(channels, channels * 4, kernel_size=3, padding=1)
         self.shuffle = nn.PixelShuffle(2)
-        self.relu = nn.ReLU(inplace=True)
+        self.leaky = nn.LeakyReLU(0.2, inplace=True)
     
     def forward(self, x):
         x = self.conv(x)
         x = self.shuffle(x)
-        x = self.relu(x)
+        x = self.leaky(x)
         return x
 
 class ResizeNet(BaseNet):
-    def __init__(self, upscale_factor=8, num_channels=[3,16,32,64], num_res_blocks=4):
+    def __init__(self, upscale_factor=8, num_channels=[3,16,32,64]):
         #upscale_factor is 8 when we want to go from 32x32 to 256x256, 4 for 64x64 to 256x256 etc.
         super().__init__(num_channels)
         self.upscale_factor = upscale_factor
