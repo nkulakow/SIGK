@@ -5,9 +5,12 @@ import zipfile
 import cv2
 import glob
 
-DATASET_URL = "http://data.vision.ee.ethz.ch/cvl/DIV2K/DIV2K_train_HR.zip"
-ZIP_PATH = "DIV2K_train_HR.zip"
-DATA_PATH = "DIV2K_train_256"
+DATASET_URL_TRAIN = "http://data.vision.ee.ethz.ch/cvl/DIV2K/DIV2K_train_HR.zip"
+ZIP_PATH_TRAIN = "DIV2K_train_HR.zip"
+DATA_PATH_TRAIN = "DIV2K_train_256"
+DATASET_URL_VAL = "http://data.vision.ee.ethz.ch/cvl/DIV2K/DIV2K_valid_HR.zip"
+ZIP_PATH_VAL = "DIV2K_valid_HR.zip"
+DATA_PATH_VAL = "DIV2K_valid_256"
 
 # Preprocessing: scaling i center crop do 256x256 (takes a bit of time, like 4 mins so do it once :D)
 def preprocess_div2k(input_dir, output_dir, target_size=256):
@@ -37,11 +40,20 @@ def preprocess_div2k(input_dir, output_dir, target_size=256):
         cv2.imwrite(os.path.join(output_dir, filename), img_cropped)
 
 if __name__ == "__main__":
-    urllib.request.urlretrieve(DATASET_URL, ZIP_PATH)
-    with zipfile.ZipFile(ZIP_PATH, 'r') as zip_ref:
-        zip_ref.extractall("data/")
+    # urllib.request.urlretrieve(DATASET_URL_TRAIN, ZIP_PATH_TRAIN)
+    # with zipfile.ZipFile(ZIP_PATH_TRAIN, 'r') as zip_ref:
+    #     zip_ref.extractall("data/")
+
+    # preprocess_div2k(
+    #     input_dir="data/DIV2K_train_HR",
+    #     output_dir=os.path.join("data", DATA_PATH_TRAIN)
+    # )
+
+    # urllib.request.urlretrieve(DATASET_URL_VAL, ZIP_PATH_VAL)
+    # with zipfile.ZipFile(ZIP_PATH_VAL, 'r') as zip_ref:
+    #     zip_ref.extractall("data/")
 
     preprocess_div2k(
-        input_dir="data/DIV2K_train_HR",
-        output_dir=os.path.join("data", DATA_PATH)
+        input_dir="data/DIV2K_valid_HR",
+        output_dir=os.path.join("data", DATA_PATH_VAL)
     )

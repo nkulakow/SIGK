@@ -2,3 +2,4 @@ venv/*
 lab1/data/*
 lab1/__pycache__/*
 lab1/DIV2K_train_HR.zip
+lab1/DIV2K_valid_HR.zip
