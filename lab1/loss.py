@@ -10,6 +10,7 @@ class MseSsimLipsLoss(nn.Module):
         self.ssim_weight = ssim_weight
         self.lpips_weight = lpips_weight
         self.lpips_fn = lpips.LPIPS(net='alex').to(device)
+        #change data range to 1 when doing denoise 
         self.ssim = StructuralSimilarityIndexMeasure(data_range=2.0).to(device)
 
     def forward(self, output, target):
