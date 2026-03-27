@@ -10,3 +10,5 @@ scikit-learn
 opencv-python
 lpips
 torchmetrics
+tqdm
+scikit-image
