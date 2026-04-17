@@ -1,0 +1,1 @@
+For lab 2 1st download HDR dataset, Bracketed images and HDR ones. Put the HDR and Bracketed_images folders in the same path as the projekt-kopia.ipynb. Run the code from top of the jupyter notebook, downloading any missing library dependencies if needed.
