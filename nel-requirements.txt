@@ -12,3 +12,4 @@ lpips
 torchmetrics
 tqdm
 scikit-image
+trimesh
